@@ -1,0 +1,129 @@
+#!/usr/bin/gjs
+
+/*
+ * This is a template/mockup of custom looking GJS application
+ * Copyright (C) 2018 konkor <konkor.github.io>
+ *
+ * Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * You should have received a copy of the GNU General Public License along
+ * with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+const Gtk = imports.gi.Gtk;
+const GLib = imports.gi.GLib;
+const Gio = imports.gi.Gio;
+const Lang = imports.lang;
+
+const APPDIR = getCurrentFile ()[1];
+imports.searchPath.unshift(APPDIR);
+
+let theme_gui = APPDIR + "/data/themes/default/gtk.css";
+let cssp = null;
+
+var CustomApplication = new Lang.Class ({
+    Name: "CustomApplication",
+    Extends: Gtk.Application,
+
+    _init: function (args) {
+        GLib.set_prgname ("custom-application");
+        this.parent ({
+            application_id: "org.konkor.template.application",
+            flags: Gio.ApplicationFlags.HANDLES_OPEN
+        });
+        GLib.set_application_name ("Custom GTK Application");
+    },
+
+    vfunc_startup: function() {
+        this.parent();
+        this.window = new Gtk.Window ();
+        this.window.set_icon_name ("org.konkor.custom");
+        this.add_window (this.window);
+        this.build ();
+    },
+
+    vfunc_activate: function() {
+        this.window.show_all ();
+        this.window.present ();
+    },
+
+    build: function() {
+        this.window.set_default_size (512, 320);
+        cssp = get_css_provider ();
+        if (cssp) {
+            Gtk.StyleContext.add_provider_for_screen (
+                this.window.get_screen(), cssp, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION);
+        }
+        this.hb = new Gtk.HeaderBar ();
+        this.hb.set_show_close_button (true);
+        this.hb.get_style_context ().add_class ("hb");
+        this.window.set_titlebar (this.hb);
+        this.home = new Gtk.Button ({label:"H", tooltip_text:"Home"});
+        this.home.get_style_context ().add_class ("hb-button");
+        this.hb.add (this.home);
+        let btn = new Gtk.Button ({label:"Apply", tooltip_text:"Default Action"});
+        btn.get_style_context ().add_class ("suggested-action");
+        this.hb.pack_end (btn);
+        this.sidebar = new Sidebar ();
+        let box = new Gtk.Box ({orientation:Gtk.Orientation.HORIZONTAL});
+        this.window.add (box);
+        this.sidebar = new Sidebar ();
+        box.add (this.sidebar);
+        this.content = new Gtk.Box ({orientation:Gtk.Orientation.VERTICAL});
+        box.add (this.content);
+        this.sidebar.set_size_request (56, 320);
+    }
+});
+
+var Sidebar = new Lang.Class({
+    Name: "Sidebar",
+    Extends: Gtk.Box,
+
+    _init: function () {
+        this.parent ({orientation:Gtk.Orientation.VERTICAL});
+        this.get_style_context ().add_class ("sb");
+
+        let btn = new Gtk.Button ({label:"A", tooltip_text:"Button A"});
+        btn.get_style_context ().add_class ("sb-button");
+        this.add (btn);
+        btn = new Gtk.Button ({label:"B", tooltip_text:"Button B"});
+        btn.get_style_context ().add_class ("sb-button");
+        this.add (btn);
+        btn = new Gtk.Button ({label:"C", tooltip_text:"Button C"});
+        btn.get_style_context ().add_class ("sb-button");
+        this.add (btn);
+
+        btn = Gtk.Button.new_from_icon_name ("application-menu-symbolic",16);
+        btn.tooltip_text = "Settings";
+        btn.get_style_context ().add_class ("sb-button");
+        this.pack_end (btn, false, false, 0);
+    }
+});
+
+function get_css_provider () {
+    let cssp = new Gtk.CssProvider ();
+    let css_file = Gio.File.new_for_path (theme_gui);
+    try {
+        cssp.load_from_file (css_file);
+    } catch (e) {
+        debug (e);
+        cssp = null;
+    }
+    return cssp;
+}
+
+function getCurrentFile () {
+    let stack = (new Error()).stack;
+    let stackLine = stack.split("\n")[1];
+    if (!stackLine)
+        throw new Error ("Could not find current file");
+    let match = new RegExp ("@(.+):\\d+").exec(stackLine);
+    if (!match)
+        throw new Error ("Could not find current file");
+    let path = match[1];
+    let file = Gio.File.new_for_path (path);
+    return [file.get_path(), file.get_parent().get_path(), file.get_basename()];
+}
+
+let app = new CustomApplication (ARGV);
+app.run (ARGV);

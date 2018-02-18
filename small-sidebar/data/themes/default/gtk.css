@@ -1,0 +1,57 @@
+@define-color custom_base_color shade (@theme_base_color, 0.9);
+@define-color custom_fg_color shade (@theme_fg_color, 0.9);
+@define-color custom_bg_color shade (@theme_bg_color, 0.9);
+
+.hb, .hb GtkLabel, .hb label {
+  border-width: 0;
+  border-style:none;
+  box-shadow:none;
+  outline-width:0px;
+  border-image:none;
+  padding:0;
+  border:0;
+  text-shadow:none;
+}
+.titlebar {
+  padding:0 1em 0 0;
+
+}
+.sb {
+  color: #bfbfbf;
+  background-color: @custom_bg_color;
+  font-size: 1.2em;
+}
+.sb-button {
+  border-radius: 0;
+  border-style:none;
+  box-shadow:none;
+  outline-width:0;
+  border-image:none;
+  font-size: 1em;
+  padding:1em;
+  margin:0;
+  border:0;
+  color: @custom_fg_color;
+  text-shadow:none;
+  background-image: none;
+}
+.sb-button:checked, .sb-button:hover {
+  color: @custom_fg_color;
+  background-color: @custom_base_color;
+}
+.sb-button:checked {
+  font-weight: bold;
+}
+.hb-button {
+  margin:0;
+  font-size: 32;
+  font-weight: bold;
+  color: #cfcfcf;
+  padding:0 12px;
+  outline-width:0;
+  border-radius: 0;
+  border-style:none;
+  border-image:none;
+  background-image: none;
+  background-color: #ff2a3f;
+}
