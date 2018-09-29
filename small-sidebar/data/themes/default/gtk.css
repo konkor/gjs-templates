@@ -14,14 +14,13 @@
 }
 .titlebar {
   padding:0 1em 0 0;
-
 }
 .sb {
   color: #bfbfbf;
   background-color: @custom_bg_color;
   font-size: 1.2em;
 }
-.sb-button {
+.sb-button, .sb-preferences {
   border-radius: 0;
   border-style:none;
   box-shadow:none;
@@ -35,16 +34,19 @@
   text-shadow:none;
   background-image: none;
 }
-.sb-button:checked, .sb-button:hover {
+.sb-button:checked, .sb-button:hover, .sb-preferences:checked, .sb-preferences:hover {
   color: @custom_fg_color;
   background-color: @custom_base_color;
 }
 .sb-button:checked {
   font-weight: bold;
 }
+.sb-preferences {
+  -gtk-icon-source: -gtk-icontheme("pan-end-symbolic");
+}
 .hb-button {
   margin:0;
-  font-size: 32;
+  font-size: 32px;
   font-weight: bold;
   color: #cfcfcf;
   padding:0 12px;
