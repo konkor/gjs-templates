@@ -6,6 +6,7 @@ depcomp
 Makefile.in
 aclocal.m4
 zip-files/
+things/
 .deps/
 autom4te.cache/
 compile
